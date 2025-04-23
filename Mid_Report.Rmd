@@ -1,0 +1,59 @@
+---
+title: "PFAI R markup"
+author: "Saqlain Abbas"
+date: "2025-04-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Filter and Sort Cars by MPG and HP
+
+```{r}
+library(dplyr)
+good_mpg_cars <- filter(mtcars, mpg > 20)
+sorted_cars <- arrange(good_mpg_cars, desc(hp))
+print(sorted_cars)
+```
+
+# Scatter Plot: Car Weight vs MPG
+
+```{r}
+library(ggplot2)
+plot <- ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  labs(title = "Relationship between Car Weight and MPG",
+       x = "Weight (1000 lbs)",
+       y = "Miles Per Gallon (MPG)")
+print(plot)
+```
+
+# One-Sample t-test Example
+
+```{r}
+sample_data <- c(12, 15, 9, 8, 11, 13, 10, 14)
+t_test_result <- t.test(sample_data, mu = 10)
+print(t_test_result)
+```
+
+# Linear Regression with caret
+
+```{r}
+# install.packages("caret") # Uncomment if caret is not installed
+library(caret)
+data <- mtcars
+set.seed(123)
+train_rows <- createDataPartition(data$mpg, p = 0.8, list = FALSE)
+train_data <- data[train_rows, ]
+test_data <- data[-train_rows, ]
+preProc <- preProcess(train_data[, -1], method = c("center", "scale"))
+train_scaled <- predict(preProc, train_data[, -1])
+test_scaled <- predict(preProc, test_data[, -1])
+model <- train(x = train_scaled, y = train_data$mpg, method = "lm")
+predicted_mpg <- predict(model, test_scaled)
+test_rmse <- RMSE(predicted_mpg, test_data$mpg)
+cat("Test RMSE:", test_rmse, "\n")
+```
